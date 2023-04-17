@@ -18,7 +18,7 @@
 
 
 
-#include <Tone32.h>
+#include "pitches.h"
 
 #define BUZZER_PIN 27
 #define BUZZER_CHANNEL 0
@@ -74,27 +74,29 @@ int tr=0;
 int pom3=0;
 bool sound=1; //sound on or off
 
-int fase=0; //fase 0=start screen,//fase 1=playing fase //fase 3=game over
+int fase=0; //fase 0=start screen,//fase 1=playing fase //fase 2=game over
 
 float spaceX[30];
 float spaceY[30];
 
 
 void setup(void) {
+pinMode(15, OUTPUT); // to boot with battery...
+digitalWrite(15,1);  // and/or power from 5v rail instead of USB
+
   
-          pinMode(21,INPUT_PULLUP);
-          pinMode(22,INPUT_PULLUP);
-          pinMode(17,INPUT_PULLUP);
-          pinMode(2,INPUT_PULLUP);
-          pinMode(12,INPUT_PULLUP); //fire2 B
-          pinMode(13,INPUT_PULLUP); //fire1 A
+          pinMode(43,INPUT_PULLUP); // Move down - was 21
+          pinMode(44,INPUT_PULLUP); // Move up - was 22
+          pinMode(18,INPUT_PULLUP); // Move right - was 17
+          pinMode(17,INPUT_PULLUP); // Move left - was 2
+          //pinMode(12,INPUT_PULLUP); //fire2 A - no connection on board
+          pinMode(16,INPUT_PULLUP); //fire1 B - was 13
           pinMode(25,OUTPUT); //led2
           pinMode(33,OUTPUT); //led1
           pinMode(26,OUTPUT); //led3
-          pinMode(15,INPUT_PULLUP); //stisak
-          pinMode(13,INPUT_PULLUP); //buttonB
+          pinMode(21,INPUT_PULLUP); //press stick - was 15
           pinMode(0,INPUT); //LORA built in buttons
-          pinMode(35,INPUT);
+          pinMode(14,INPUT); // Sound on off - was 35
     digitalWrite(26,1);      
   tft.init();
   tft.setRotation(1);
@@ -108,7 +110,7 @@ void setup(void) {
     spaceY[i]=random(18,132);
   }
   
-  while(digitalRead(13)==1)// wait until button a is pressed.............
+  while(digitalRead(16)==1)// wait until button a is pressed.............
   int nezz=0;
    digitalWrite(26,0);      
     
@@ -196,7 +198,7 @@ level=1;
         delay(2600);
         
 
-        while(digitalRead(13)==1)// wait until button a is pressed.............
+        while(digitalRead(16)==1)// wait until button a is pressed.............
         int nezz=0;
 
         tft.fillScreen(TFT_BLACK);
@@ -223,7 +225,7 @@ void loop() {
     tft.fillScreen(TFT_BLACK);
     tft.setSwapBytes(true);
     tft.pushImage(0, 0,  240, 135, back2);
-    while(digitalRead(13)==1)
+    while(digitalRead(16)==1)
     {
     int nezz=0;
     }
@@ -246,7 +248,7 @@ void loop() {
         delay(1000);
         
 
-        while(digitalRead(13)==1)// wait until button a is pressed.............
+        while(digitalRead(16)==1)// wait until button a is pressed.............
         int nezz=0;
 
         tft.fillScreen(TFT_BLACK);
@@ -265,20 +267,20 @@ void loop() {
     }
 
 if(fase==1){ //playing fase
-if(digitalRead(21)==0 and y<94) //Move down
+if(digitalRead(43)==0 and y<94) //Move down
 y=y+sped;
 
-if(digitalRead(22)==0 and y>18) //Move up
+if(digitalRead(44)==0 and y>18) //Move up
 y=y-sped;
 
-if(digitalRead(17)==0 and x<125) //Move right
+if(digitalRead(18)==0 and x<125) //Move right
   x=x+sped;
 
-if(digitalRead(2)==0 and  x>0) //Move right
+if(digitalRead(17)==0 and  x>0) //Move right
      x=x-sped;
 
 
-    if(digitalRead(13)==0 ) //fire button A button
+    if(digitalRead(16)==0 ) //fire button B button
     { if(pom==0){
       pom=1;
   
@@ -291,7 +293,7 @@ if(digitalRead(2)==0 and  x>0) //Move right
 
 
 
-        if(digitalRead(12)==0 && rockets>0) //Rocket button B button
+        if(digitalRead(21)==0 && rockets>0) //Rocket button B button
     { if(pom2==0){
       pom2=1;
     rockets--;
@@ -355,8 +357,8 @@ if(digitalRead(2)==0 and  x>0) //Move right
       {
         tft.pushImage(buletX[j], buletY[j],  12, 12, ex2);
            if(sound==1){
-           tone(BUZZER_PIN, NOTE_C5, 12, BUZZER_CHANNEL);
-           noTone(BUZZER_PIN, BUZZER_CHANNEL);} else{delay(12);}
+           tone(BUZZER_PIN, NOTE_C5, 12);
+           noTone(BUZZER_PIN);} else{delay(12);}
            tft.fillRect(buletX[j], buletY[j],12,12,TFT_BLACK);
         buletX[j]=-50;
         brojac=brojac+1;
@@ -369,12 +371,12 @@ if(digitalRead(2)==0 and  x>0) //Move right
          
          if(eHealth<=0){
           tft.pushImage(ex, ey,  55, 55, buum);
-          tone(BUZZER_PIN, NOTE_E4, 100, BUZZER_CHANNEL);
-          tone(BUZZER_PIN, NOTE_D4, 80, BUZZER_CHANNEL);
-          tone(BUZZER_PIN, NOTE_G5, 100, BUZZER_CHANNEL);
-          tone(BUZZER_PIN, NOTE_C3, 80, BUZZER_CHANNEL);
-          tone(BUZZER_PIN, NOTE_F4, 280, BUZZER_CHANNEL);
-         noTone(BUZZER_PIN, BUZZER_CHANNEL);
+          tone(BUZZER_PIN, NOTE_E4, 100);
+          tone(BUZZER_PIN, NOTE_D4, 80);
+          tone(BUZZER_PIN, NOTE_G5, 100);
+          tone(BUZZER_PIN, NOTE_C3, 80);
+          tone(BUZZER_PIN, NOTE_F4, 280);
+         noTone(BUZZER_PIN);
          delay(700);
          newLevel();}
          digitalWrite(25,1);
@@ -393,8 +395,8 @@ if(digitalRead(2)==0 and  x>0) //Move right
       {
         tft.pushImage(rocketX[j], rocketY[j],  24, 24, explosion);
            if(sound==1){
-           tone(BUZZER_PIN, NOTE_C3, 40, BUZZER_CHANNEL);
-         noTone(BUZZER_PIN, BUZZER_CHANNEL);
+           tone(BUZZER_PIN, NOTE_C3, 40);
+         noTone(BUZZER_PIN);
            }else {delay(40);}
          tft.fillRect(rocketX[j], rocketY[j],24,24,TFT_BLACK);
         //delay(30);
@@ -410,12 +412,12 @@ if(digitalRead(2)==0 and  x>0) //Move right
          
          if(eHealth<=0){
           tft.pushImage(ex, ey,  55, 55, buum);
-          tone(BUZZER_PIN, NOTE_E4, 100, BUZZER_CHANNEL);
-          tone(BUZZER_PIN, NOTE_D4, 80, BUZZER_CHANNEL);
-          tone(BUZZER_PIN, NOTE_G5, 100, BUZZER_CHANNEL);
-          tone(BUZZER_PIN, NOTE_C3, 80, BUZZER_CHANNEL);
-          tone(BUZZER_PIN, NOTE_F4, 280, BUZZER_CHANNEL);
-         noTone(BUZZER_PIN, BUZZER_CHANNEL);
+          tone(BUZZER_PIN, NOTE_E4, 100);
+          tone(BUZZER_PIN, NOTE_D4, 80);
+          tone(BUZZER_PIN, NOTE_G5, 100);
+          tone(BUZZER_PIN, NOTE_C3, 80);
+          tone(BUZZER_PIN, NOTE_F4, 280);
+         noTone(BUZZER_PIN);
          delay(700);
          newLevel();}
          digitalWrite(25,0);
@@ -437,12 +439,12 @@ if(digitalRead(2)==0 and  x>0) //Move right
          lives--;
          if(lives==0){
            tft.pushImage(x, y,  55, 55, buum);
-          tone(BUZZER_PIN, NOTE_G4, 100, BUZZER_CHANNEL);
-          tone(BUZZER_PIN, NOTE_B4, 80, BUZZER_CHANNEL);
-          tone(BUZZER_PIN, NOTE_C5, 100, BUZZER_CHANNEL);
-          tone(BUZZER_PIN, NOTE_A4, 80, BUZZER_CHANNEL);
-          tone(BUZZER_PIN, NOTE_F4, 280, BUZZER_CHANNEL);
-         noTone(BUZZER_PIN, BUZZER_CHANNEL);
+          tone(BUZZER_PIN, NOTE_G4, 100);
+          tone(BUZZER_PIN, NOTE_B4, 80);
+          tone(BUZZER_PIN, NOTE_C5, 100);
+          tone(BUZZER_PIN, NOTE_A4, 80);
+          tone(BUZZER_PIN, NOTE_F4, 280);
+         noTone(BUZZER_PIN);
          delay(500);
           tft.fillScreen(TFT_BLACK);
           fase=2;}
@@ -451,8 +453,8 @@ if(digitalRead(2)==0 and  x>0) //Move right
          digitalWrite(33,1);
          blinkTime=1;
          if(sound==1){
-         tone(BUZZER_PIN, NOTE_C6, 4, BUZZER_CHANNEL);
-         noTone(BUZZER_PIN, BUZZER_CHANNEL);}else {delay(4);}
+         tone(BUZZER_PIN, NOTE_C6, 4);
+         noTone(BUZZER_PIN);}else {delay(4);}
          
         }
     
@@ -517,7 +519,7 @@ if(fase==2) //game over fase
        tft.print("Score : "+String(brojac));
        tft.setCursor(24,69,2);
        tft.print("Level : "+String(level));
-       while(digitalRead(13)==1)
+       while(digitalRead(16)==1)
        {
         int nezz=0;
        }
