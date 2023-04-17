@@ -2,6 +2,7 @@
 Game for TTGO T-Watch 
 
 Updated in 2023 by Richard Gain to allow the TTGO T-Display S3 to be used on the original PCB.
+
 Basically just pin remappings for the switches - I have not attempted the LEDs or buzzer yet.
 
 
